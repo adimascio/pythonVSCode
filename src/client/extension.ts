@@ -23,6 +23,7 @@ import * as jup from './jupyter/main';
 import { HelpProvider } from './helpProvider';
 import { activateUpdateSparkLibraryProvider } from './providers/updateSparkLibraryProvider';
 import { activateFormatOnSaveProvider } from './providers/formatOnSaveProvider';
+import { ParenNewLineFormatProvider } from './providers/parenNewLineProvider';
 import { WorkspaceSymbols } from './workspaceSymbols/main';
 import { BlockFormatProviders } from './typeFormatters/blockFormatProvider';
 import * as os from 'os';
@@ -139,8 +140,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.languages.registerOnTypeFormattingEditProvider(PYTHON, new BlockFormatProviders(), ':'));
     // In case we have CR LF
-    const triggerCharacters: string[] = os.EOL.split('');
-    triggerCharacters.shift();
+    context.subscriptions.push(vscode.languages.registerOnTypeFormattingEditProvider(PYTHON, new ParenNewLineFormatProvider(), os.EOL.substring(0, 1), ...os.EOL.slice(1)));
 
     const hepProvider = new HelpProvider();
     context.subscriptions.push(hepProvider);
